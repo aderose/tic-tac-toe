@@ -1,17 +1,22 @@
 const gameBoard = (function () {
   const boardContainer = document.querySelector(".gameboard");
-  const tiles = ["", "", "", "", "", "", "", "", ""];
+  const tileValues = ["x", "x", "o", "o", "x", "o", "o", "x", "o"];
+  const tiles = [];
 
   // render the gameBoard
   function render() {
-    tiles.forEach(addToBoard);
+    tileValues.forEach((tileValue, index) => {
+      addToBoard(tileValue, index);
+    });
   }
 
   // add an individual tile to the board
-  function addToBoard(tileValue) {
-    boardContainer.appendChild(createTile(tileValue));
+  function addToBoard(tileValue, tileIndex) {
+    tiles[tileIndex] = createTile(tileValue);
+    boardContainer.appendChild(tiles[tileIndex]);
   }
 
+  // create a tile object for the given tilevalue
   function createTile(tileValue) {
     const tile = document.createElement("div");
     tile.classList.add("tile", "round-border");
@@ -22,7 +27,19 @@ const gameBoard = (function () {
     return tile;
   }
 
-  return { render };
+  return { tileValues, tiles, render };
 })();
 
-gameBoard.render();
+const gameController = (function () {
+  gameBoard.render();
+
+  const tiles = gameBoard.tiles;
+  const tileValues = gameBoard.tileValues;
+
+  // listen for click on tile
+  tiles.forEach((tile, index) => {
+    tile.addEventListener("click", () => {
+      console.log("Clicked: " + tileValues[index]);
+    });
+  });
+})();
