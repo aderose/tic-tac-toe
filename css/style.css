@@ -1,0 +1,88 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;400;700&display=swap");
+
+:root {
+  --main-color: rgb(70, 24, 116);
+  --main-hover: rgb(121, 43, 199);
+  --main-bg-color: #fafafa;
+  --container-color: #fff;
+}
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+  font-size: 14px;
+  width: 100vw;
+  height: 100vh;
+  color: var(--main-color);
+  background-color: var(--main-bg-color);
+  display: flex;
+  justify-content: center;
+}
+
+.round-border {
+  border-radius: 5px;
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+/* Container formatting */
+
+.container {
+  background-color: var(--container-color);
+  margin: 3em 1em;
+  padding: 1em;
+  box-shadow: 0 0 5px 3px #eee;
+  width: fit-content;
+  height: fit-content;
+  text-align: center;
+}
+
+.container h1 {
+  margin-bottom: 0.5em;
+  font-size: 2rem;
+}
+
+.gameboard {
+  display: grid;
+  background-color: var(--main-color);
+  grid-template-columns: repeat(3, 75px);
+  grid-template-rows: repeat(3, 75px);
+  grid-gap: 0.5em;
+  padding: 0.5em;
+}
+
+/* Cell formatting */
+
+.tile {
+  background-color: var(--container-color);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.tile i {
+  font-size: 2rem;
+}
+
+.tile:hover {
+  color: var(--main-hover);
+}
+
+/* Media queries */
+@media (min-width: 768px) {
+  .gameboard {
+    grid-template-columns: repeat(3, 125px);
+    grid-template-rows: repeat(3, 125px);
+  }
+
+  .tile i {
+    font-size: 3rem;
+  }
+}
