@@ -45,7 +45,7 @@ const gameController = (function ({ player1, player2 }) {
     const tiles = tileObjects.map((tile) => tile.getIcon());
 
     for (let i = 0; i < 3; i++) {
-      // check each row/columns/diagonals for a winner
+      // check each row/column/diagonal for a winner
       if (
         // rows
         [tiles[0 + 3 * i], tiles[1 + 3 * i], tiles[2 + 3 * i]].every(
