@@ -54,14 +54,19 @@ const gameController = (function ({ player1, player2 }) {
         // columns
         [tiles[0 + i], tiles[3 + i], tiles[6 + i]].every(
           (icon, index, icons) => icon === icons[0] && icon !== ""
-        ) ||
-        // major diagonal
-        (tiles[0] == tiles[4] && tiles[4] == tiles[8] && tiles[0] != "") ||
-        // minor diagonal
-        (tiles[2] == tiles[4] && tiles[4] == tiles[6] && tiles[2] != "")
+        )
       )
         return true;
     }
+
+    if (
+      // major diagonal
+      (tiles[0] == tiles[4] && tiles[4] == tiles[8] && tiles[0] != "") ||
+      // minor diagonal
+      (tiles[2] == tiles[4] && tiles[4] == tiles[6] && tiles[2] != "")
+    )
+      return true;
+
     return false;
   }
 
