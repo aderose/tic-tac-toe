@@ -36,9 +36,12 @@ const gameController = (function ({ player1, player2 }) {
     const currentPlayer = ++moves % 2 === 0 ? player1 : player2;
 
     // update tile that the player clicked on
-    this.clicked(currentPlayer);
+    this.clicked(currentPlayer.getIcon());
     // check if game is over
-    if (gameFinished()) console.log(`Winner is ${currentPlayer}`);
+    if (gameFinished()) {
+      console.log(`Winner is ${currentPlayer.getName()}`);
+      //location.reload();
+    }
   }
 
   // check each row/column/diagonal for a winner
@@ -71,9 +74,9 @@ const gameController = (function ({ player1, player2 }) {
   }
 
   return { playGame };
-})({ player1: "x", player2: "o" });
+})({ player1: createPlayer("p1", "x"), player2: createPlayer("p2", "o") });
 
-// create a tile object for the given tilevalue
+// create a tile object for the given tile value
 function createTile() {
   let value = "";
   const tile = document.createElement("div");
@@ -101,3 +104,16 @@ function createTile() {
 }
 
 gameController.playGame();
+
+// create a player object for the given name and icon
+function createPlayer(newName, newIcon) {
+  let name = newName || "";
+  let icon = newIcon || "";
+
+  const getName = () => name;
+  const getIcon = () => icon;
+  const setName = (name) => (this.name = name);
+  const setIcon = (icon) => (this.icon = icon);
+
+  return { getName, getIcon, setName, setIcon };
+}
