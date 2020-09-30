@@ -1,16 +1,5 @@
-const gameBoard = (function () {
-  const boardContainer = document.querySelector(".gameboard");
-  const tileObjects = [];
-  const BOARD_SIZE = 9;
-
-  // initialise the game board with empty tiles
-  function initialise() {
-    for (let i = 0; i < BOARD_SIZE; i++) {
-      tileObjects[i] = createTile();
-    }
-    render();
-    return tileObjects;
-  }
+const gameBoard = (function (boardContainer) {
+  const tileObjects = Array.from({ length: 9 }, () => createTile());
 
   // render the gameBoard
   function render() {
@@ -20,11 +9,12 @@ const gameBoard = (function () {
     });
   }
 
-  return { initialise, render };
-})();
+  return { tileObjects, render };
+})(document.querySelector(".gameboard"));
 
-const gameController = (function () {
-  const tileObjects = gameBoard.initialise();
+const gameController = (function ({ player1, player2 }) {
+  gameBoard.render();
+  const tileObjects = gameBoard.tileObjects;
 
   // listen for a single click on tile
   tileObjects.forEach((tileObject) =>
@@ -36,11 +26,10 @@ const gameController = (function () {
   function makeTurn() {
     // work out which player's turn it is
     // set that tile to the players icon
-    const playerIcon = "x";
-    this.clicked(playerIcon);
+    this.clicked(player1);
     // check if game is over
   }
-})();
+})({ player1: "x", player2: "o" });
 
 // create a tile object for the given tilevalue
 function createTile() {
