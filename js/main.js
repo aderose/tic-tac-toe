@@ -14,22 +14,34 @@ const gameBoard = (function (boardContainer) {
 })(document.querySelector(".gameboard"));
 
 const gameController = (function ({ player1, player2 }) {
-  gameBoard.render();
   const tileObjects = gameBoard.tileObjects;
 
-  // listen for a single click on tile
-  tileObjects.forEach((tileObject) =>
-    tileObject.tile.addEventListener("click", makeTurn.bind(tileObject), {
-      once: true,
-    })
-  );
+  // number of moves played
+  let moves = 0;
 
-  function makeTurn() {
+  function playGame() {
+    // render the gameboard
+    gameBoard.render();
+
+    // listen for a single click on tile
+    tileObjects.forEach((tileObject) =>
+      tileObject.tile.addEventListener("click", playTurn.bind(tileObject), {
+        once: true,
+      })
+    );
+  }
+
+  function playTurn() {
     // work out which player's turn it is
+
     // set that tile to the players icon
-    this.clicked(player1);
+    this.clicked(++moves % 2 === 0 ? player1 : player2);
     // check if game is over
   }
+
+  function gameFinished() {}
+
+  return { playGame };
 })({ player1: "x", player2: "o" });
 
 // create a tile object for the given tilevalue
@@ -58,3 +70,5 @@ function createTile() {
 
   return { tile, setIcon, getIcon, clicked, update };
 }
+
+gameController.playGame();
