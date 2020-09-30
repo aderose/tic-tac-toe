@@ -41,11 +41,11 @@ const gameController = (function ({ player1, player2 }) {
     if (gameFinished()) console.log(`Winner is ${currentPlayer}`);
   }
 
+  // check each row/column/diagonal for a winner
   function gameFinished() {
     const tiles = tileObjects.map((tile) => tile.getIcon());
 
     for (let i = 0; i < 3; i++) {
-      // check each row/column/diagonal for a winner
       if (
         // rows
         [tiles[0 + 3 * i], tiles[1 + 3 * i], tiles[2 + 3 * i]].every(
