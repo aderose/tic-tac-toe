@@ -16,7 +16,7 @@ const gameBoard = (function () {
   function render() {
     tileObjects.forEach((tileObject) => {
       tileObject.update();
-      tileObject.render(boardContainer);
+      boardContainer.appendChild(tileObject.tile);
     });
   }
 
@@ -26,11 +26,6 @@ const gameBoard = (function () {
 const gameController = (function () {
   const tileObjects = gameBoard.initialise();
 
-  // get input from player on what game type to play
-  // singleplayer/multiplayer
-  // make players
-
-  // game running
   // listen for a single click on tile
   tileObjects.forEach((tileObject) =>
     tileObject.tile.addEventListener("click", makeTurn.bind(tileObject), {
@@ -41,7 +36,8 @@ const gameController = (function () {
   function makeTurn() {
     // work out which player's turn it is
     // set that tile to the players icon
-    this.setIcon("x");
+    const playerIcon = "x";
+    this.clicked(playerIcon);
     // check if game is over
   }
 })();
@@ -52,25 +48,23 @@ function createTile() {
   const tile = document.createElement("div");
   tile.classList.add("tile", "round-border", "clickable");
   const icon = document.createElement("i");
+  tile.appendChild(icon);
 
-  // set icon and prevent the tile from being clicked & update icon
-  const setIcon = (tileValue) => {
-    value = tileValue;
+  const getIcon = () => value;
+  const setIcon = (tileValue) => (value = tileValue);
+
+  // set icon, remove pointer formatting then update icon
+  const clicked = (tileValue) => {
+    setIcon(tileValue);
     tile.classList.remove("clickable");
     update();
   };
 
-  const getIcon = () => value;
-
+  // update tile image to show icon depending on tile value
   const update = () => {
     if (value === "x") icon.classList.add("fas", "fa-times");
     if (value === "o") icon.classList.add("far", "fa-circle");
   };
 
-  const render = (board) => {
-    board.appendChild(tile);
-  };
-
-  tile.appendChild(icon);
-  return { tile, setIcon, getIcon, update, render };
+  return { tile, setIcon, getIcon, clicked, update };
 }
