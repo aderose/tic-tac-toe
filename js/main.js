@@ -1,7 +1,8 @@
 const gameBoard = (function (boardContainer) {
+  // create 9 tiles using the tile factory
   const tileObjects = Array.from({ length: 9 }, createTile);
 
-  // render the gameBoard
+  // show gameBoard by rendering the tiles
   function render() {
     tileObjects.forEach((tileObject) => {
       tileObject.update();
