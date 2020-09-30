@@ -1,5 +1,5 @@
 const gameBoard = (function (boardContainer) {
-  const tileObjects = Array.from({ length: 9 }, () => createTile());
+  const tileObjects = Array.from({ length: 9 }, createTile);
 
   // render the gameBoard
   function render() {
