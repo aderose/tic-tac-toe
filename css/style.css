@@ -2,7 +2,7 @@
 
 :root {
   --main-color: rgb(70, 24, 116);
-  --main-hover: rgb(121, 43, 199);
+  --main-hover: rgb(224, 194, 255);
   --main-bg-color: #fafafa;
   --container-color: #fff;
 }
@@ -30,6 +30,8 @@ body {
 
 .clickable {
   cursor: pointer;
+  background-color: var(--container-color);
+  transition: background-color 0.3s;
 }
 
 /* Container formatting */
@@ -71,8 +73,8 @@ body {
   font-size: 2rem;
 }
 
-.tile:hover {
-  color: var(--main-hover);
+.clickable:hover {
+  background-color: var(--main-hover);
 }
 
 /* Media queries */
