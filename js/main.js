@@ -32,14 +32,38 @@ const gameController = (function ({ player1, player2 }) {
   }
 
   function playTurn() {
-    // work out which player's turn it is
+    // determine which player plays
+    const currentPlayer = ++moves % 2 === 0 ? player1 : player2;
 
-    // set that tile to the players icon
-    this.clicked(++moves % 2 === 0 ? player1 : player2);
+    // update tile that the player clicked on
+    this.clicked(currentPlayer);
     // check if game is over
+    if (gameFinished()) console.log(`Winner is ${currentPlayer}`);
   }
 
-  function gameFinished() {}
+  function gameFinished() {
+    const tiles = tileObjects.map((tile) => tile.getIcon());
+
+    for (let i = 0; i < 3; i++) {
+      // check each row/columns/diagonals for a winner
+      if (
+        // rows
+        [tiles[0 + 3 * i], tiles[1 + 3 * i], tiles[2 + 3 * i]].every(
+          (icon, index, icons) => icon === icons[0] && icon !== ""
+        ) ||
+        // columns
+        [tiles[0 + i], tiles[3 + i], tiles[6 + i]].every(
+          (icon, index, icons) => icon === icons[0] && icon !== ""
+        ) ||
+        // major diagonal
+        (tiles[0] == tiles[4] && tiles[4] == tiles[8] && tiles[0] != "") ||
+        // minor diagonal
+        (tiles[2] == tiles[4] && tiles[4] == tiles[6] && tiles[2] != "")
+      )
+        return true;
+    }
+    return false;
+  }
 
   return { playGame };
 })({ player1: "x", player2: "o" });
