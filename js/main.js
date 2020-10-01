@@ -13,7 +13,7 @@ const gameBoard = (function (boardContainer) {
   return { tileObjects, render };
 })(document.querySelector(".gameboard"));
 
-const gameController = (function ({ player1, player2, restart }) {
+const gameController = ({ player1, player2, restart }) => {
   const tileObjects = gameBoard.tileObjects;
   restart.addEventListener("click", () => location.reload());
 
@@ -34,7 +34,7 @@ const gameController = (function ({ player1, player2, restart }) {
 
   function playTurn() {
     // determine which player plays
-    const currentPlayer = ++moves % 2 === 0 ? player1 : player2;
+    const currentPlayer = moves++ % 2 === 0 ? player1 : player2;
 
     // update tile that the player clicked on
     this.clicked(currentPlayer.getIcon());
@@ -89,11 +89,7 @@ const gameController = (function ({ player1, player2, restart }) {
   }
 
   return { playGame };
-})({
-  player1: createPlayer("p1", "x"),
-  player2: createPlayer("p2", "o"),
-  restart: document.querySelector(".restart"),
-});
+};
 
 // create a tile object for the given tile value
 function createTile() {
@@ -122,8 +118,6 @@ function createTile() {
   return { tile, setIcon, getIcon, clicked, update };
 }
 
-gameController.playGame();
-
 // create a player object for the given name and icon
 function createPlayer(newName, newIcon) {
   let name = newName || "";
@@ -136,3 +130,33 @@ function createPlayer(newName, newIcon) {
 
   return { getName, getIcon, setName, setIcon };
 }
+
+// control which state of the game we're in
+const stateController = (() => {
+  // initialise the start menu state (default on load)
+  const startMenu = () => {
+    const form = document.querySelector("form");
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const p1Name = document.querySelector("#player1").value || "Player 1";
+      const p2Name = document.querySelector("#player2").value || "Player 2";
+      document.querySelector(".menu").classList.toggle("hidden");
+      document.querySelector(".game").classList.toggle("hidden");
+      startGame(createPlayer(p1Name, "x"), createPlayer(p2Name, "o"));
+    });
+  };
+
+  // initialise the game state (loads on form submit)
+  const startGame = (player1, player2) => {
+    // initialise the game
+    const game = gameController({
+      player1,
+      player2,
+      restart: document.querySelector(".restart"),
+    });
+
+    game.playGame();
+  };
+
+  startMenu();
+})();
