@@ -48,8 +48,6 @@ const gameController = ({ player1, player2, restart }) => {
   // check each row/column/diagonal for a winner
   function gameFinished() {
     const tiles = tileObjects.map((tile) => tile.getIcon());
-    let isFinished = false;
-    let result = "";
 
     for (let i = 0; i < 3; i++) {
       if (
@@ -62,8 +60,7 @@ const gameController = ({ player1, player2, restart }) => {
           (icon, index, icons) => icon === icons[0] && icon !== ""
         )
       ) {
-        isFinished = true;
-        result = "win";
+        return { isFinished: true, result: "win" };
       }
     }
 
@@ -73,17 +70,15 @@ const gameController = ({ player1, player2, restart }) => {
       // minor diagonal
       (tiles[2] == tiles[4] && tiles[4] == tiles[6] && tiles[2] != "")
     ) {
-      isFinished = true;
-      result = "win";
+      return { isFinished: true, result: "win" };
     }
 
     // if every tile is filled, it's a tie
     if (tiles.every((icon) => icon === "x" || icon === "o")) {
-      isFinished = true;
-      result = "tie";
+      return { isFinished: true, result: "tie" };
     }
 
-    return { isFinished, result };
+    return { isFinished: false, result: "" };
   }
 
   return { playGame };
@@ -138,7 +133,7 @@ const stateController = (() => {
       e.preventDefault();
       const p1Name = document.querySelector("#player1").value || "Player 1";
       const p2Name = document.querySelector("#player2").value || "Player 2";
-      document.querySelector(".menu").classList.toggle("hidden");
+      document.querySelector(".start").classList.toggle("hidden");
       document.querySelector(".game").classList.toggle("hidden");
       startGame(createPlayer(p1Name, "x"), createPlayer(p2Name, "o"));
     });
@@ -157,9 +152,15 @@ const stateController = (() => {
 
   // initialise ending menu (after the game is finished)
   const endingMenu = (result, player) => {
-    console.log("Game OVER");
-    if (result == "win") console.log(`Winner is ${player.getName()}`);
-    else if (result == "tie") console.log("It was a tie.");
+    let output = "";
+    if (result == "win") output = `The winner is ${player.getName()}!`;
+    else if (result == "tie") output = "It was a tie..";
+    document.querySelector("#result").textContent = output;
+    document.querySelector(".game").classList.toggle("hidden");
+    document.querySelector(".end").classList.toggle("hidden");
+    document
+      .querySelector("#restart-end")
+      .addEventListener("click", () => location.reload());
   };
 
   startMenu();
