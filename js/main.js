@@ -39,14 +39,19 @@ const gameController = (function ({ player1, player2, restart }) {
     // update tile that the player clicked on
     this.clicked(currentPlayer.getIcon());
     // check if game is over
-    if (gameFinished()) {
-      console.log(`Winner is ${currentPlayer.getName()}`);
+    const roundResult = gameFinished();
+    if (roundResult.isFinished) {
+      if (roundResult.result == "win")
+        console.log(`Winner is ${currentPlayer.getName()}`);
+      else if (roundResult.result == "tie") console.log("It was a tie.");
     }
   }
 
   // check each row/column/diagonal for a winner
   function gameFinished() {
     const tiles = tileObjects.map((tile) => tile.getIcon());
+    let isFinished = false;
+    let result = "";
 
     for (let i = 0; i < 3; i++) {
       if (
@@ -58,8 +63,10 @@ const gameController = (function ({ player1, player2, restart }) {
         [tiles[0 + i], tiles[3 + i], tiles[6 + i]].every(
           (icon, index, icons) => icon === icons[0] && icon !== ""
         )
-      )
-        return true;
+      ) {
+        isFinished = true;
+        result = "win";
+      }
     }
 
     if (
@@ -67,10 +74,18 @@ const gameController = (function ({ player1, player2, restart }) {
       (tiles[0] == tiles[4] && tiles[4] == tiles[8] && tiles[0] != "") ||
       // minor diagonal
       (tiles[2] == tiles[4] && tiles[4] == tiles[6] && tiles[2] != "")
-    )
-      return true;
+    ) {
+      isFinished = true;
+      result = "win";
+    }
 
-    return false;
+    // if every tile is filled, it's a tie
+    if (tiles.every((icon) => icon === "x" || icon === "o")) {
+      isFinished = true;
+      result = "tie";
+    }
+
+    return { isFinished, result };
   }
 
   return { playGame };
