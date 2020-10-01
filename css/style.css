@@ -97,6 +97,10 @@ input[type="text"] {
   transition: background-color 0.3s;
 }
 
+form label {
+  pointer-events: none;
+}
+
 input[type="text"]:hover {
   background-color: var(--main-hover);
 }
