@@ -13,8 +13,9 @@ const gameBoard = (function (boardContainer) {
   return { tileObjects, render };
 })(document.querySelector(".gameboard"));
 
-const gameController = (function ({ player1, player2 }) {
+const gameController = (function ({ player1, player2, restart }) {
   const tileObjects = gameBoard.tileObjects;
+  restart.addEventListener("click", () => location.reload());
 
   // number of moves played
   let moves = 0;
@@ -40,7 +41,6 @@ const gameController = (function ({ player1, player2 }) {
     // check if game is over
     if (gameFinished()) {
       console.log(`Winner is ${currentPlayer.getName()}`);
-      //location.reload();
     }
   }
 
@@ -74,7 +74,11 @@ const gameController = (function ({ player1, player2 }) {
   }
 
   return { playGame };
-})({ player1: createPlayer("p1", "x"), player2: createPlayer("p2", "o") });
+})({
+  player1: createPlayer("p1", "x"),
+  player2: createPlayer("p2", "o"),
+  restart: document.querySelector(".restart"),
+});
 
 // create a tile object for the given tile value
 function createTile() {

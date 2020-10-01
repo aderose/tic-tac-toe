@@ -24,6 +24,27 @@ body {
   justify-content: center;
 }
 
+button {
+  background-color: var(--main-color);
+  color: var(--container-color);
+  font-family: inherit;
+  padding: 0.5em 1em;
+  border: none;
+  border-radius: 5px;
+  margin-top: 1em;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+button:focus {
+  outline: none;
+}
+
+button:hover {
+  background-color: var(--main-hover);
+  color: var(--main-color);
+}
+
 .round-border {
   border-radius: 5px;
 }
