@@ -3,7 +3,7 @@
 :root {
   --main-color: rgb(70, 24, 116);
   --main-hover: rgb(224, 194, 255);
-  --main-bg-color: #fafafa;
+  --main-bg-color: #f0f0f0;
   --input-color: #eee;
   --container-color: #fff;
 }
@@ -59,7 +59,7 @@ input[type="submit"]:hover {
 
 .container {
   background-color: var(--container-color);
-  box-shadow: 0 0 5px 3px #eee;
+  box-shadow: 3px 3px 5px 1px #ddd;
   text-align: center;
   padding: 1em;
 }
