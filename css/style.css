@@ -121,6 +121,13 @@ input[type="text"]:focus {
   padding: 0.5em;
 }
 
+.turn {
+  font-size: 1.2rem;
+  display: flex;
+  justify-content: space-between;
+  margin: 0.25em 0.25em 0;
+}
+
 /* Cell formatting */
 
 .tile {

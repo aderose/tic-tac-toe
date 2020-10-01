@@ -15,6 +15,7 @@ const gameBoard = (function (boardContainer) {
 
 const gameController = ({ player1, player2, restart }) => {
   const tileObjects = gameBoard.tileObjects;
+  const output = document.querySelector("#turn");
   restart.addEventListener("click", () => location.reload());
 
   // number of moves played
@@ -23,6 +24,9 @@ const gameController = ({ player1, player2, restart }) => {
   function playGame() {
     // render the gameboard
     gameBoard.render();
+
+    // output the player 1 name as the starter
+    output.textContent = player1.getName();
 
     // listen for a single click on tile
     tileObjects.forEach((tileObject) =>
@@ -34,7 +38,12 @@ const gameController = ({ player1, player2, restart }) => {
 
   function playTurn() {
     // determine which player plays
+    // moves = 0
+
+    const nextPlayer = (moves + 1) % 2 === 0 ? player1 : player2;
     const currentPlayer = moves++ % 2 === 0 ? player1 : player2;
+    // update the turn output to the next player
+    output.textContent = nextPlayer.getName();
 
     // update tile that the player clicked on
     this.clicked(currentPlayer.getIcon());
