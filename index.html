@@ -14,10 +14,16 @@
     <section class="start menu container round-border">
       <h1>Tic Tac Toe</h1>
       <form>
+        <fieldset>
+          <input type="radio" name="gametype" id="singleplayer" checked />
+          <label for="singleplayer" class="space">Singleplayer</label>
+          <input type="radio" name="gametype" id="multiplayer" />
+          <label for="multiplayer">Multiplayer</label>
+        </fieldset>
         <label for="player1">Player 1 Name:</label>
-        <input type="text" name="player1" id="player1" />
+        <input type="text" name="player1" id="player1" autocomplete="off" />
         <label for="player2">Player 2 Name:</label>
-        <input type="text" name="player2" id="player2" />
+        <input type="text" name="player2" id="player2" autocomplete="off" />
         <input type="submit" value="Play" />
       </form>
     </section>

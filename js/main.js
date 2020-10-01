@@ -38,10 +38,9 @@ const gameController = ({ player1, player2, restart }) => {
 
   function playTurn() {
     // determine which player plays
-    // moves = 0
-
     const nextPlayer = (moves + 1) % 2 === 0 ? player1 : player2;
     const currentPlayer = moves++ % 2 === 0 ? player1 : player2;
+
     // update the turn output to the next player
     output.textContent = nextPlayer.getName();
 
@@ -138,10 +137,13 @@ const stateController = (() => {
   // initialise the start menu state (default on load)
   const startMenu = () => {
     const form = document.querySelector("form");
+    const p1Input = document.querySelector("#player1");
+    const p2Input = document.querySelector("#player2");
+
     form.addEventListener("submit", (e) => {
       e.preventDefault();
-      const p1Name = document.querySelector("#player1").value || "Player 1";
-      const p2Name = document.querySelector("#player2").value || "Player 2";
+      const p1Name = p1Input.value || "Player 1";
+      const p2Name = p2Input.value || "Player 2";
       document.querySelector(".start").classList.toggle("hidden");
       document.querySelector(".game").classList.toggle("hidden");
       startGame(createPlayer(p1Name, "x"), createPlayer(p2Name, "o"));
