@@ -41,9 +41,7 @@ const gameController = ({ player1, player2, restart }) => {
     // check if game is over
     const roundResult = gameFinished();
     if (roundResult.isFinished) {
-      if (roundResult.result == "win")
-        console.log(`Winner is ${currentPlayer.getName()}`);
-      else if (roundResult.result == "tie") console.log("It was a tie.");
+      stateController.endingMenu(roundResult.result, currentPlayer);
     }
   }
 
@@ -154,9 +152,17 @@ const stateController = (() => {
       player2,
       restart: document.querySelector(".restart"),
     });
-
     game.playGame();
   };
 
+  // initialise ending menu (after the game is finished)
+  const endingMenu = (result, player) => {
+    console.log("Game OVER");
+    if (result == "win") console.log(`Winner is ${player.getName()}`);
+    else if (result == "tie") console.log("It was a tie.");
+  };
+
   startMenu();
+
+  return { endingMenu };
 })();
