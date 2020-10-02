@@ -139,6 +139,31 @@ const stateController = (() => {
     const form = document.querySelector("form");
     const p1Input = document.querySelector("#player1");
     const p2Input = document.querySelector("#player2");
+    const p2label = document.querySelector("#p2label");
+    const singleplayer = document.querySelector("#singleplayer");
+    const multiplayer = document.querySelector("#multiplayer");
+    const computer = document.querySelector("#computer-input");
+
+    singleplayer.addEventListener("click", () => {
+      if (!p2Input.classList.contains("hidden")) {
+        p2label.textContent = "Computer Difficulty:";
+        p2Input.classList.toggle("hidden");
+        computer.classList.toggle("hidden");
+      }
+    });
+
+    multiplayer.addEventListener("click", () => {
+      if (p2Input.classList.contains("hidden")) {
+        p2label.textContent = "Player 2 Name:";
+        p2Input.classList.toggle("hidden");
+        computer.classList.toggle("hidden");
+      }
+    });
+
+    // add listeners to the radio buttons
+    // when user clicks on button
+    // singleplayer: replace player 2 name input with player 2 difficulty input
+    // multiplayer: replace player 2 difficulty with player 2 name
 
     form.addEventListener("submit", (e) => {
       e.preventDefault();

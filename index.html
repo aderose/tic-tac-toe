@@ -22,8 +22,20 @@
         </fieldset>
         <label for="player1">Player 1 Name:</label>
         <input type="text" name="player1" id="player1" autocomplete="off" />
-        <label for="player2">Player 2 Name:</label>
-        <input type="text" name="player2" id="player2" autocomplete="off" />
+        <label for="player2" id="p2label">Computer Difficulty:</label>
+        <input
+          type="text"
+          name="player2"
+          id="player2"
+          autocomplete="off"
+          class="hidden"
+        />
+        <fieldset id="computer-input">
+          <input type="radio" name="difficulty" id="easy" checked />
+          <label for="easy" class="space">Easy</label>
+          <input type="radio" name="difficulty" id="hard" />
+          <label for="hard">Hard</label>
+        </fieldset>
         <input type="submit" value="Play" />
       </form>
     </section>
