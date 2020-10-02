@@ -1,4 +1,4 @@
-const gameBoard = (function (boardContainer) {
+const gameBoard = (function () {
   // create 9 tiles using the tile factory
   const tileObjects = Array.from({ length: 9 }, createTile);
 
@@ -6,12 +6,12 @@ const gameBoard = (function (boardContainer) {
   function render() {
     tileObjects.forEach((tileObject) => {
       tileObject.update();
-      boardContainer.appendChild(tileObject.tile);
+      document.querySelector(".gameboard").appendChild(tileObject.tile);
     });
   }
 
   return { tileObjects, render };
-})(document.querySelector(".gameboard"));
+})();
 
 const gameController = ({ player1, player2 }) => {
   const tileObjects = gameBoard.tileObjects;
@@ -38,7 +38,7 @@ const gameController = ({ player1, player2 }) => {
     );
   }
 
-  async function playTurn() {
+  function playTurn() {
     if (player2.getType() === "user") {
       // determine which player plays
       const nextPlayer = (moves + 1) % 2 === 0 ? player1 : player2;
@@ -69,7 +69,6 @@ const gameController = ({ player1, player2 }) => {
           emptyTiles[Math.floor(Math.random() * emptyTiles.length)];
 
         // wait 3 seconds and then click on that tile
-        await sleep(500);
         randomTile.clicked(player2.getIcon());
 
         // update output to the user's name again
@@ -84,10 +83,6 @@ const gameController = ({ player1, player2 }) => {
     if (roundResult.isFinished) {
       stateController.endingMenu(roundResult.result, roundResult.winner);
     }
-  }
-
-  function sleep(ms) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
   // check each row/column/diagonal for a winner
