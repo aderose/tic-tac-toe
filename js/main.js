@@ -132,9 +132,11 @@ const gameController = ({ player1, player2 }) => {
       if (output.winner.getIcon() == player.getIcon()) return -1;
     }
 
+    // maximise computers score
     if (isMaximising) {
       let bestScore = -Infinity;
       for (let i = 0; i < tiles.length; i++) {
+        // try each empty tile and find the maximum score
         if (tiles[i].getIcon() === "") {
           tiles[i].setIcon(computer.getIcon());
           let score = minimax(tiles, player, computer, false);
@@ -145,9 +147,11 @@ const gameController = ({ player1, player2 }) => {
         }
       }
       return bestScore;
+      // minimise player score
     } else {
       let bestScore = Infinity;
       for (let i = 0; i < tiles.length; i++) {
+        // try each empty tile and find the minimum score
         if (tiles[i].getIcon() === "") {
           tiles[i].setIcon(player.getIcon());
           let score = minimax(tiles, player, computer, true);
