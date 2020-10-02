@@ -39,6 +39,9 @@ const gameController = ({ player1, player2 }) => {
   }
 
   async function playTurn() {
+    // ensure we do not overwrite a pre-existing choice
+    if (this.getIcon() !== "") return;
+
     if (player2.getType() === "user") {
       // determine which player plays
       const nextPlayer = (moves + 1) % 2 === 0 ? player1 : player2;
