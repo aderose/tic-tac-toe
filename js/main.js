@@ -39,56 +39,111 @@ const gameController = ({ player1, player2 }) => {
   }
 
   function playTurn() {
-    // determine which player plays
-    const nextPlayer = (moves + 1) % 2 === 0 ? player1 : player2;
-    const currentPlayer = moves++ % 2 === 0 ? player1 : player2;
+    if (player2.getType() === "user") {
+      // determine which player plays
+      const nextPlayer = (moves + 1) % 2 === 0 ? player1 : player2;
+      const currentPlayer = moves++ % 2 === 0 ? player1 : player2;
 
-    // update the turn output to the next player
-    output.textContent = nextPlayer.getName();
+      // update the turn output to the next player
+      output.textContent = nextPlayer.getName();
 
-    // update tile that the player clicked on
-    this.clicked(currentPlayer.getIcon());
+      // update tile that the player clicked on
+      this.clicked(currentPlayer.getIcon());
+    } else if (player2.getType() === "ai-easy") {
+      // update tile that the player clicked on
+      this.clicked(player1.getIcon());
+
+      // update output
+      output.textContent = player2.getName();
+
+      // get list of available tiles
+      const emptyTiles = tileObjects.filter((tile) => tile.getIcon() === "");
+
+      // return if there are no more empty tiles
+      if (
+        emptyTiles.length !== 0 &&
+        !gameFinished(player1, player2).isFinished
+      ) {
+        // choose random tile from that list
+        const randomTile =
+          emptyTiles[Math.floor(Math.random() * emptyTiles.length)];
+
+        // wait 3 seconds and then click on that tile
+        randomTile.clicked(player2.getIcon());
+
+        // update output to the user's name again
+        output.textContent = player1.getName();
+      }
+    } else if (player2.getType() === "ai-hard") {
+      console.log("hard");
+    }
+
     // check if game is over
-    const roundResult = gameFinished();
+    const roundResult = gameFinished(player1, player2);
     if (roundResult.isFinished) {
-      stateController.endingMenu(roundResult.result, currentPlayer);
+      stateController.endingMenu(roundResult.result, roundResult.winner);
     }
   }
 
   // check each row/column/diagonal for a winner
   function gameFinished() {
-    const tiles = tileObjects.map((tile) => tile.getIcon());
+    const icons = tileObjects.map((tile) => tile.getIcon());
+    const p1Icon = player1.getIcon();
+
+    // 0 1 2
+    // 3 4 5
+    // 6 7 8
 
     for (let i = 0; i < 3; i++) {
+      // rows
       if (
-        // rows
-        [tiles[0 + 3 * i], tiles[1 + 3 * i], tiles[2 + 3 * i]].every(
-          (icon, index, icons) => icon === icons[0] && icon !== ""
-        ) ||
-        // columns
-        [tiles[0 + i], tiles[3 + i], tiles[6 + i]].every(
-          (icon, index, icons) => icon === icons[0] && icon !== ""
+        [icons[0 + 3 * i], icons[1 + 3 * i], icons[2 + 3 * i]].every(
+          (icon) => icon === icons[3 * i] && icon !== ""
         )
       ) {
-        return { isFinished: true, result: "win" };
+        return {
+          isFinished: true,
+          result: "win",
+          winner: icons[0 + 3 * i] === p1Icon ? player1 : player2,
+        };
+      }
+      // columns
+      if (
+        [icons[0 + i], icons[3 + i], icons[6 + i]].every(
+          (icon) => icon === icons[0 + i] && icon !== ""
+        )
+      ) {
+        return {
+          isFinished: true,
+          result: "win",
+          winner: icons[0 + i] === p1Icon ? player1 : player2,
+        };
       }
     }
 
     if (
       // major diagonal
-      (tiles[0] == tiles[4] && tiles[4] == tiles[8] && tiles[0] != "") ||
+      (icons[0] == icons[4] && icons[4] == icons[8] && icons[0] != "") ||
       // minor diagonal
-      (tiles[2] == tiles[4] && tiles[4] == tiles[6] && tiles[2] != "")
+      (icons[2] == icons[4] && icons[4] == icons[6] && icons[2] != "")
     ) {
-      return { isFinished: true, result: "win" };
+      return {
+        isFinished: true,
+        result: "win",
+        winner: icons[4] === p1Icon ? player1 : player2,
+      };
     }
 
     // if every tile is filled, it's a tie
-    if (tiles.every((icon) => icon === "x" || icon === "o")) {
-      return { isFinished: true, result: "tie" };
+    if (icons.every((icon) => icon === "x" || icon === "o")) {
+      return {
+        isFinished: true,
+        result: "tie",
+        winner: null,
+      };
     }
 
-    return { isFinished: false, result: "" };
+    return { isFinished: false, result: "", winner: null };
   }
 
   return { playGame };
@@ -153,6 +208,8 @@ const stateController = (() => {
     aiEasy.addEventListener("click", () => (difficulty = "easy"));
     aiHard.addEventListener("click", () => (difficulty = "hard"));
 
+    // if singleplayer is clicked, hide the player 2 name input
+    // and unhide computer input.
     singleplayer.addEventListener("click", () => {
       if (!p2Input.classList.contains("hidden")) {
         p2label.textContent = "Computer Difficulty:";
@@ -161,6 +218,8 @@ const stateController = (() => {
       }
     });
 
+    // if multiplayer is clicked, hide the computer input
+    // and unhide player 2 name input.
     document.querySelector("#multiplayer").addEventListener("click", () => {
       if (p2Input.classList.contains("hidden")) {
         p2label.textContent = "Player 2 Name:";
@@ -169,6 +228,8 @@ const stateController = (() => {
       }
     });
 
+    // when form is submitted determine how many non-computer players there are
+    // and then start the game with those players
     document.querySelector("form").addEventListener("submit", (e) => {
       e.preventDefault();
       let player1, player2;
@@ -197,12 +258,17 @@ const stateController = (() => {
 
   // initialise ending menu (after the game is finished)
   const endingMenu = (result, player) => {
+    // provide output depending on the result of the game
     let output = "";
     if (result == "win") output = `The winner is ${player.getName()}!`;
     else if (result == "tie") output = "It was a tie..";
     document.querySelector("#result").textContent = output;
+
+    // switch to the ending menu
     document.querySelector(".game").classList.toggle("hidden");
     document.querySelector(".end").classList.toggle("hidden");
+
+    // reload game if the user wishes to re-start
     document
       .querySelector("#restart-end")
       .addEventListener("click", () => location.reload());
