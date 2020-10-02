@@ -85,7 +85,7 @@ const gameController = ({ player1, player2 }) => {
     const roundResult = gameFinished(player1, player2);
     if (roundResult.isFinished) {
       document.querySelector(".block-input").classList.toggle("hidden");
-      sleep(500);
+      await sleep(500);
       document.querySelector(".block-input").classList.toggle("hidden");
       stateController.endingMenu(roundResult.result, roundResult.winner);
     }
