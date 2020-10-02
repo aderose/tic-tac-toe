@@ -52,7 +52,10 @@ const gameController = ({ player1, player2 }) => {
 
       // update tile that the player clicked on
       this.clicked(currentPlayer.getIcon());
-    } else if (player2.getType() === "ai-easy") {
+    } else if (
+      player2.getType() === "ai-easy" ||
+      player2.getType() === "ai-hard"
+    ) {
       // update tile that the player clicked on
       this.clicked(player1.getIcon());
 
@@ -65,47 +68,107 @@ const gameController = ({ player1, player2 }) => {
       // return if there are no more empty tiles
       if (
         emptyTiles.length !== 0 &&
-        !gameFinished(player1, player2).isFinished
+        !gameFinished(tileObjects, player1, player2).isFinished
       ) {
-        // choose random tile from that list
-        const randomTile =
-          emptyTiles[Math.floor(Math.random() * emptyTiles.length)];
+        // get computers choice
+        const computerTile = getComputerChoice(
+          player1,
+          player2,
+          tileObjects,
+          emptyTiles
+        );
 
-        // wait 3 seconds and then click on that tile
+        // wait 0.5 seconds and then click on that tile
         document.querySelector(".block-input").classList.toggle("hidden");
-        await sleep(500);
-        randomTile.clicked(player2.getIcon());
+        await pausePlay(500);
+        computerTile.clicked(player2.getIcon());
         document.querySelector(".block-input").classList.toggle("hidden");
 
         // update output to the user's name again
         output.textContent = player1.getName();
       }
-    } else if (player2.getType() === "ai-hard") {
-      console.log("hard");
     }
 
     // check if game is over
-    const roundResult = gameFinished(player1, player2);
+    const roundResult = gameFinished(tileObjects, player1, player2);
     if (roundResult.isFinished) {
       document.querySelector(".block-input").classList.toggle("hidden");
-      await sleep(500);
+      await pausePlay(500);
       document.querySelector(".block-input").classList.toggle("hidden");
       stateController.endingMenu(roundResult.result, roundResult.winner);
     }
   }
 
-  function sleep(ms) {
+  function getComputerChoice(player, computer, tiles, emptyTiles) {
+    if (computer.getType() == "ai-easy") {
+      return emptyTiles[Math.floor(Math.random() * emptyTiles.length)];
+    } else if (computer.getType() == "ai-hard") {
+      let bestScore = -Infinity;
+      let bestMove = -1;
+
+      for (let i = 0; i < tiles.length; i++) {
+        if (tiles[i].getIcon() === "") {
+          tiles[i].setIcon(computer.getIcon());
+          let score = minimax(tiles, player, computer, false);
+          tiles[i].setIcon("");
+          if (score > bestScore) {
+            bestScore = score;
+            bestMove = i;
+          }
+        }
+      }
+      return tiles[bestMove];
+    }
+  }
+
+  function minimax(tiles, player, computer, isMaximising) {
+    // result is either "win", "tie" or "none"
+    const output = gameFinished(tiles, player, computer);
+
+    // if the game is finished
+    if (output.result !== "none") {
+      if (output.winner == null) return 0;
+      if (output.winner.getIcon() == computer.getIcon()) return 1;
+      if (output.winner.getIcon() == player.getIcon()) return -1;
+    }
+
+    if (isMaximising) {
+      let bestScore = -Infinity;
+      for (let i = 0; i < tiles.length; i++) {
+        if (tiles[i].getIcon() === "") {
+          tiles[i].setIcon(computer.getIcon());
+          let score = minimax(tiles, player, computer, false);
+          tiles[i].setIcon("");
+          if (score > bestScore) {
+            bestScore = score;
+          }
+        }
+      }
+      return bestScore;
+    } else {
+      let bestScore = Infinity;
+      for (let i = 0; i < tiles.length; i++) {
+        if (tiles[i].getIcon() === "") {
+          tiles[i].setIcon(player.getIcon());
+          let score = minimax(tiles, player, computer, true);
+          tiles[i].setIcon("");
+          if (score < bestScore) {
+            bestScore = score;
+          }
+        }
+      }
+      return bestScore;
+    }
+  }
+
+  function pausePlay(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
   // check each row/column/diagonal for a winner
-  function gameFinished() {
-    const icons = tileObjects.map((tile) => tile.getIcon());
+  function gameFinished(tiles, player1, player2) {
+    const icons = tiles.map((tile) => tile.getIcon());
     const p1Icon = player1.getIcon();
-
-    // 0 1 2
-    // 3 4 5
-    // 6 7 8
 
     for (let i = 0; i < 3; i++) {
       // rows
@@ -156,7 +219,7 @@ const gameController = ({ player1, player2 }) => {
       };
     }
 
-    return { isFinished: false, result: "", winner: null };
+    return { isFinished: false, result: "none", winner: null };
   }
 
   return { playGame };
