@@ -153,8 +153,8 @@ input[type="text"]:focus {
 }
 
 #computer-input {
-  margin: 0.5em 0;
-  padding: 0.5rem;
+  margin: 6.667px 0;
+  padding: 7px 0 6px 0;
 }
 
 /* Game formatting */
